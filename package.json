@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GLukaz/LiquidFunRain.git"
+    "url": "git+https://github.com/flygOn-LiTe/LiquidFunPhaser.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/GLukaz/LiquidFunRain/issues"
+    "url": "https://github.com/flygOn-LiTe/LiquidFunPhaser.git#readme"
   },
-  "homepage": "https://github.com/GLukaz/LiquidFunRain#readme",
+  "homepage": "https://github.com/flygOn-LiTe/LiquidFunPhaser.git",
   "devDependencies": {
     "@rollup/rollup-win32-x64-msvc": "^4.42.0",
     "vite": "^6.3.5"
