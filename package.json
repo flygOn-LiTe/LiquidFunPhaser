@@ -17,9 +17,9 @@
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/flygOn-LiTe/LiquidFunPhaser.git#readme"
+    "url": "https://github.com/flygOn-LiTe/LiquidFunPhaser.git"
   },
-  "homepage": "https://github.com/flygOn-LiTe/LiquidFunPhaser.git",
+  "homepage": "https://github.com/flygOn-LiTe/LiquidFunPhaser.git#readme",
   "devDependencies": {
     "@rollup/rollup-win32-x64-msvc": "^4.42.0",
     "vite": "^6.3.5"
