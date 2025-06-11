@@ -1,0 +1,27 @@
+{
+  "name": "liquidfundemo",
+  "version": "1.0.0",
+  "description": "Javascript demo using LiquidFun and Phaser 3",
+  "main": "demo3.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "start": "vite",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GLukaz/LiquidFunRain.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GLukaz/LiquidFunRain/issues"
+  },
+  "homepage": "https://github.com/GLukaz/LiquidFunRain#readme",
+  "devDependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.42.0",
+    "vite": "^6.3.5"
+  }
+}
