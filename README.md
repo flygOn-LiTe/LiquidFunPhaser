@@ -2,6 +2,6 @@
 
 Demo using LiquidFun and Phaser 3
 
-#Run the Demo
+#Run the Demo with vite
 
 npm run start
