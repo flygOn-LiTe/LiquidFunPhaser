@@ -1,5 +1,4 @@
-# LiquidFunRain
-Javascript demo using LiquidFun and Phaser 3
+# LiquidFun.js + Phaser 3.85 Demo
+Demo using LiquidFun and Phaser 3
 
-# Original demo in Phaser 2
-https://github.com/Arca-Digital/LiquidFunRain
+npm run start
