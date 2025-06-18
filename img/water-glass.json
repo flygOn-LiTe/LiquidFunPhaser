@@ -1,0 +1,41 @@
+{
+	"textures": [
+		{
+			"image": "water-glass.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 88,
+				"h": 176
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "glass.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 89,
+						"h": 175
+					},
+					"spriteSourceSize": {
+						"x": 2,
+						"y": 1,
+						"w": 86,
+						"h": 174
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 86,
+						"h": 174
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:6dda99396ec1a9a49d5c0e540853e7a3:fb5308e3e20de5da5db7a5e3b2d6fefa:996f74d8ac200985d0e112fe842838ec$"
+	}
+}

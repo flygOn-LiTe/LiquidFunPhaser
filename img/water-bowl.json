@@ -1,0 +1,41 @@
+{
+	"textures": [
+		{
+			"image": "water-bowl.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 97,
+				"h": 64
+			},
+			"scale": 1,
+			"frames": [
+				{
+					"filename": "water-bowl.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 100,
+						"h": 65
+					},
+					"spriteSourceSize": {
+						"x": 4,
+						"y": 1,
+						"w": 95,
+						"h": 62
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 95,
+						"h": 62
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:6941d653eb6af15cbd57124b77f75889:f2ef0e57a39db9af2de41f8a65aad611:5c5ce73f73533d449a5bf564038f993b$"
+	}
+}

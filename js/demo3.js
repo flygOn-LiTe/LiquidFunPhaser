@@ -9,6 +9,8 @@ const INITIAL_BAR_X = 2.5;
 const INITIAL_BAR_Y = 2.0;
 const INITIAL_BAR_ANGLE = 0.15;
 const METER = 100;
+const bowlWidth = 95; // px (from your JSON)
+const bowlHeight = 62; // px
 
 var sprites;
 var world;
@@ -21,29 +23,45 @@ var meterToPixel = (mx) => mx * METER;
 var pixelToMeter = (px) => px / METER;
 
 function createParticleGroup() {
-  console.log("createParticleGroup called!");
   if (typeof b2ParticleSystemDef === "undefined") {
     console.error(
       "b2ParticleSystemDef is not defined! LiquidFun is not loaded yet!"
     );
     return;
   }
-  var psd = new b2ParticleSystemDef();
-  psd.radius = 0.025;
-  psd.dampingStrength = 0.4;
-  var particleSystem = world.CreateParticleSystem(psd);
-  var box = new b2PolygonShape();
-  box.SetAsBoxXYCenterAngle(
-    1.25,
-    1.25,
-    new b2Vec2(BOX_OFFSET_X, BOX_OFFSET_Y),
-    0
+
+  // Find the bowl position and width/height (centered)
+  const bowlX = WINDOW_WIDTH / 2; // match SetupBowlSprite()
+  const bowlY = WINDOW_HEIGHT / 1.07;
+  const spawnBoxWidth = bowlWidth * 0.95; // Wider, nearly as wide as the bowl
+  const spawnBoxHeight = 300;
+
+  // Position the water just above the bowl (pixels)
+  const waterBoxCenterX = bowlX;
+  const waterBoxCenterY = bowlY - bowlHeight / 2 - spawnBoxHeight / 2 - 4; // 4px gap
+
+  // Convert to meters
+  const boxCenter = new b2Vec2(
+    pixelToMeter(waterBoxCenterX),
+    pixelToMeter(waterBoxCenterY)
   );
+  const boxHalfW = pixelToMeter(spawnBoxWidth / 2);
+  const boxHalfH = pixelToMeter(spawnBoxHeight / 2);
+
+  // Set up the particle system
+  var psd = new b2ParticleSystemDef();
+  psd.radius = 0.03;
+  psd.dampingStrength = 0.1;
+  var particleSystem = world.CreateParticleSystem(psd);
+
+  // Make a small box for the spawn area
+  var box = new b2PolygonShape();
+  box.SetAsBoxXYCenterAngle(boxHalfW, boxHalfH, boxCenter, 0);
+
   var particleGroupDef = new b2ParticleGroupDef();
   particleGroupDef.shape = box;
   particleGroupDef.flags = b2_waterParticle;
-  console.log("PARTICLE FLAGS", particleGroupDef.flags);
-  var particleGroup = particleSystem.CreateParticleGroup(particleGroupDef);
+  particleSystem.CreateParticleGroup(particleGroupDef);
 }
 
 function CreateBar(barBody, width, height, offsetX, offsetY) {
@@ -57,6 +75,76 @@ function CreateBar(barBody, width, height, offsetX, offsetY) {
     OFFSET_ANGLE
   );
   barBody.CreateFixtureFromShape(shape, DENSITY);
+}
+
+function getBowlArcVertices(
+  centerX,
+  centerY,
+  radius,
+  startAngle,
+  endAngle,
+  steps
+) {
+  let points = [];
+  for (let i = 0; i <= steps; i++) {
+    let angle = startAngle + (endAngle - startAngle) * (i / steps);
+    let x = centerX + Math.cos(angle) * radius;
+    let y = centerY + Math.sin(angle) * radius; // y axis points down in screen space
+    points.push(new b2Vec2(x, y));
+  }
+  return points;
+}
+
+function createBowlBody(world, x_px, y_px, width_px, height_px) {
+  // Convert to meters
+  const x = pixelToMeter(x_px);
+  const y = pixelToMeter(y_px);
+
+  const widthTweak = 0.9; // try 0.75 to 0.82 until it fits visually
+  const w = (pixelToMeter(width_px) / 2) * widthTweak;
+  const h = pixelToMeter(height_px) / 2;
+  const thickness = pixelToMeter(6);
+
+  const wallHeight = h * 4;
+  const bottomOffsetY = (h - thickness) * 0.9;
+
+  // Create a static body for the bowl
+  let bowlDef = new b2BodyDef();
+  bowlDef.type = b2_staticBody;
+  bowlDef.position.Set(x, y);
+  let bowlBody = world.CreateBody(bowlDef);
+
+  // Left wall (vertical)
+  let leftWall = new b2PolygonShape();
+  leftWall.SetAsBoxXYCenterAngle(
+    thickness,
+    wallHeight,
+    new b2Vec2(-w + thickness, 0),
+    0
+  );
+  bowlBody.CreateFixtureFromShape(leftWall, 0);
+
+  // Right wall (vertical)
+  let rightWall = new b2PolygonShape();
+  rightWall.SetAsBoxXYCenterAngle(
+    thickness,
+    wallHeight,
+    new b2Vec2(w - thickness, 0),
+    0
+  );
+  bowlBody.CreateFixtureFromShape(rightWall, 0);
+
+  // Bottom (horizontal)
+  let bottom = new b2PolygonShape();
+  bottom.SetAsBoxXYCenterAngle(
+    w - thickness,
+    thickness,
+    new b2Vec2(0, bottomOffsetY), // shifted up a bit
+    0
+  );
+  bowlBody.CreateFixtureFromShape(bottom, 0);
+
+  return bowlBody;
 }
 
 function createEnclosure() {
@@ -155,6 +243,15 @@ function SetupBarSprite(scene) {
   var p = barBody.GetPosition();
   barSprite = scene.add.sprite(meterToPixel(p.x), meterToPixel(p.y), "bar");
   barSprite.setOrigin(0.5, 0.5);
+}
+
+function SetupBowlSprite(scene) {
+  var bowlSprite = scene.add.sprite(
+    scene.cameras.main.width / 2,
+    scene.cameras.main.height / 1.23,
+    "bowl"
+  );
+  bowlSprite.setOrigin(0.5, 0.5);
 }
 
 function moveBar(scene) {
@@ -264,6 +361,7 @@ void main()
     width: WINDOW_WIDTH,
     height: WINDOW_HEIGHT,
     parent: divName,
+    transparent: true,
     scene: {
       preload: preload,
       create: create,
@@ -277,10 +375,11 @@ void main()
   let waterPipeline;
   function preload() {
     console.log("preload called!");
-    this.load.image("dot", "img/water-particle.png");
+    this.load.image("dot", "img/water-particle-2.png");
     //this.load.image('bg', 'img/bg.png');
     //this.load.image('photo', PICTURE_FILENAME);
     this.load.image("bar", "img/bar.png");
+    this.load.image("bowl", "img/water-glass.png");
   }
 
   function create() {
@@ -294,19 +393,21 @@ void main()
       waterPipeline = this.renderer.pipelines.get("Water");
     }
 
-    //const image = this.add.image(0,0,'bg').setOrigin(0,0);
-
     const layer = this.add.layer();
     InitializeRainMaker();
-    //let bitmapData = LoadBitmapData(game);
+
     SetupParticles(this, layer);
     SetupBarSprite(this);
-    //SetupGaming(this);
+    SetupBowlSprite(this);
+
+    const bowlSpriteX = this.cameras.main.width / 2;
+    const bowlSpriteY = this.cameras.main.height / 1.07;
+
+    createBowlBody(world, bowlSpriteX, bowlSpriteY, bowlWidth, bowlHeight);
   }
 
   function update() {
     tick();
-    // scoreText.setText("score: " + points);
     if (this.input.activePointer.isDown) moveBar(this);
   }
 })("rain");
